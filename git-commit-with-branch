@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby -wKU
+
+require 'optparse'
+
+branches = %x{git branch}.split(/\n/)
+current_branch = branches.select { |branch| branch =~ /^*/ }
