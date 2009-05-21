@@ -1,6 +1,14 @@
 #!/usr/bin/env ruby -wKU
 
-require 'optparse'
+# require 'optparse'
+if ARGV.include?("-m")
+  index   = ARGV.index("-m")
+  message = ARGV[index + 1]
+end
 
-branches = %x{git branch}.split(/\n/)
-current_branch = branches.select { |branch| branch =~ /^*/ }
+%x{git branch}.split(/\n/).select { |branch| branch =~ /^\* (.*)/ }
+current_branch = $1
+ARGV[index + 1] = "\"[#{current_branch.upcase}] #{message}\""
+
+command = "git-commit #{ARGV.join(' ')}"
+%x{command}
