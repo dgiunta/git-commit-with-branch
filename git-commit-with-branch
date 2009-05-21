@@ -1,14 +1,43 @@
-#!/usr/bin/env ruby -wKU
+#!/usr/bin/env ruby
 
-# require 'optparse'
-if ARGV.include?("-m")
-  index   = ARGV.index("-m")
-  message = ARGV[index + 1]
+class NoMessageGivenError < Exception
+  def to_s
+    "No message given"    
+  end
 end
 
-%x{git branch}.split(/\n/).select { |branch| branch =~ /^\* (.*)/ }
-current_branch = $1
-ARGV[index + 1] = "\"[#{current_branch.upcase}] #{message}\""
+class CommitWithBranch
+  def initialize
+    @argv = ARGV
+  end
+  
+  def run
+    raise NoMessageGivenError unless message_given?
 
-command = "git commit #{ARGV.join(' ')}"
-system(command)
+    index   = @argv.index("-m")
+    message = @argv[index + 1]
+    @argv[index + 1] = "\"[#{current_branch.upcase}] #{message}\""
+    git "git commit #{@argv.join(' ')}"
+  end
+  
+  def current_branch
+    get("git branch").split(/\n/).select { |branch| branch =~ /^\* (.*)/ }
+    @current_branch ||= $1
+  end
+  
+  private
+
+  def git(cmd)
+    system cmd
+  end
+  
+  def get(cmd)
+    `#{cmd}`
+  end
+  
+  def message_given?
+    @argv.include?("-m")
+  end
+end
+
+CommitWithBranch.new.run
