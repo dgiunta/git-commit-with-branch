@@ -10,5 +10,5 @@ end
 current_branch = $1
 ARGV[index + 1] = "\"[#{current_branch.upcase}] #{message}\""
 
-command = "git-commit #{ARGV.join(' ')}"
-%x{command}
+command = "git commit #{ARGV.join(' ')}"
+system(command)
