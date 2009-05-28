@@ -21,8 +21,7 @@ class CommitWithBranch
   end
   
   def current_branch
-    get("git branch").split(/\n/).select { |branch| branch =~ /^\* (.*)/ }
-    @current_branch ||= $1
+    @current_branch ||= get("git branch").split(/\n/).select { |branch| branch =~ /^\* (.*)/ }[0].match(/^\* (.+)/).captures.first
   end
   
   private
