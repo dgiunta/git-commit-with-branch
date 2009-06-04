@@ -35,8 +35,12 @@ class CommitWithBranch
   end
   
   def message_given?
-    @argv.include?("-m")
+    @argv.include?("-m") && @argv[@argv.index("-m") + 1].to_s.length > 0
   end
 end
 
-CommitWithBranch.new.run
+begin
+  CommitWithBranch.new.run  
+rescue Exception => e
+  puts "Error: " + e.to_s
+end
