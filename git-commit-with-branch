@@ -16,8 +16,8 @@ class CommitWithBranch
 
     index   = @argv.index("-m")
     message = @argv[index + 1]
-    @argv[index + 1] = "\"[#{current_branch.upcase}] #{message}\""
-    git "git commit #{@argv.join(' ')}"
+    @argv[index + 1] = "\"[#{current_branch}] #{message}\""
+    git "commit #{@argv.join(' ')}"
   end
   
   def current_branch
@@ -27,7 +27,7 @@ class CommitWithBranch
   private
 
   def git(cmd)
-    system cmd
+    system "git #{cmd}"
   end
   
   def get(cmd)
